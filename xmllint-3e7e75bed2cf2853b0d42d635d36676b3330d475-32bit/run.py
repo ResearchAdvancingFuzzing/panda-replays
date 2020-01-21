@@ -3,25 +3,8 @@
 
 import sys
 import os
+import shutil
 import subprocess as sp
-
-# walk up the path to find 'panda' and add that to python path 
-# at most 10 levels up?  
-p = os.path.abspath(__file__)
-foundit=False
-for i in range(10):
-    if foundit: 
-        break
-    (hd, tl) = os.path.split(p)
-    for x in os.listdir(hd):
-        if x == "panda":
-            pypanda = os.path.join(hd, x) + "/panda/pypanda"
-            print("adding path " + pypanda)
-            sys.path.append(pypanda)
-            foundit = True
-            break
-    p = hd
-
 from panda import Panda, blocking
 
 
@@ -37,7 +20,7 @@ assert "snapshot" in y
 assert "copydir" in y
 
 # copy dir should not exist
-assert(not (os.path.exists(y["copydir"])))
+assert(not (os.path.exists(y["copydir"]))), f"You need to rm -rf {y['copydir']}"
        
 # input file should exist
 assert(os.path.exists(y["inputfile"]))
@@ -60,24 +43,31 @@ assert(os.path.isfile(qcf))
        
 
 @blocking
-def record_cmds(panda):
-
+def record_cmds():
     # create copydir
-    os.makedirs(y["copydir"])
+    #os.makedirs(y["copydir"])
 
     # copy inputfile and installdir
-    shutil.copy(y["inputfile"], y["copydir"])
-    shutil.copytree(y["installdir"], y["copydir"])
+    panda.revert_sync(y["snapshot"])
+    panda.copy_to_guest(y["copydir"])
+    # TODO: what command should we run in the guest?
+    cmd = "ls"
 
-    panda_revert_sync(y["snapshot"])
-    panda.copy_to_guest(copy_dir, iso_name)
-    panda.type_serial_cmd("ls")
+    panda.type_serial_cmd(cmd) # Type command, don't push enter
 
-    
+    print(f"Beginning recording: {y['replayname']}")
+    panda.run_monitor_cmd("begin_record {}".format(y["replayname"])) # Begin recording
+    result = panda.finish_serial_cmd() # Push enter
 
+    panda.run_monitor_cmd("end_record")
+    print(f"Ran command `{cmd}`")
+    print(f"Result: {result}")
+    panda.end_analysis()
+
+# inputfile is copied as part of copytree
+#shutil.copy(y["inputfile"], y["copydir"])
+shutil.copytree(y["installdir"], y["copydir"])
 
 panda = Panda(generic="i386", qcow=qcf)
 panda.queue_async(record_cmds)
-
-    
-    
+panda.run()
