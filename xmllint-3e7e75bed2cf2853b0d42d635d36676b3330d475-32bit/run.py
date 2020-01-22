@@ -3,8 +3,8 @@
 
 import sys
 import os
-import shutil
 import subprocess as sp
+
 from panda import Panda, blocking
 
 
@@ -19,9 +19,7 @@ assert "qcowfile" in y
 assert "snapshot" in y
 assert "copydir" in y
 
-# copy dir should not exist
-assert(not (os.path.exists(y["copydir"]))), f"You need to rm -rf {y['copydir']}"
-       
+
 # input file should exist
 assert(os.path.exists(y["inputfile"]))
 assert(os.path.isfile(y["inputfile"]))
@@ -40,34 +38,53 @@ if not os.path.exists(qcf):
 
 
 assert(os.path.isfile(qcf))
+
+
+import shutil
+
+if os.path.exists(y["copydir"]):
+    shutil.rmtree(y["copydir"])
+os.makedirs(y["copydir"])
+
+# copy inputfile and installdir
+shutil.copy(y["inputfile"], y["copydir"])
+shutil.copytree(y["installdir"], y["copydir"]+"/install")
+
        
 
 @blocking
 def record_cmds():
-    # create copydir
-    #os.makedirs(y["copydir"])
 
-    # copy inputfile and installdir
     panda.revert_sync(y["snapshot"])
-    panda.copy_to_guest(y["copydir"])
-    # TODO: what command should we run in the guest?
-    cmd = "ls"
+    panda.copy_to_guest(y["copydir"], iso_name="foo.iso")
 
-    panda.type_serial_cmd(cmd) # Type command, don't push enter
+    # this works (in the sense that the command executes and we get result back
+    panda.type_serial_cmd("ls copydir/install/libxml2")
+    result = panda.finish_serial_cmd() 
+    print("serial result = [%s]" % result)
 
-    print(f"Beginning recording: {y['replayname']}")
-    panda.run_monitor_cmd("begin_record {}".format(y["replayname"])) # Begin recording
-    result = panda.finish_serial_cmd() # Push enter
+    # this doesn't work?  Hangs forever.  :<
+    # Note: even if I delete code prior to this which does ls ..
+    # this one still doesn't work.
+    panda.type_serial_cmd("cd copydir/install/libxml2 && xmllint ~/slashdot.xml")
+    result = panda.finish_serial_cmd() 
+    print("serial result = [%s]" % result)
 
-    panda.run_monitor_cmd("end_record")
-    print(f"Ran command `{cmd}`")
-    print(f"Result: {result}")
+    # This doesn't work either? 
+    # panda.type_serial_cmd("cd copydir/install/libxml2")
+    # result = panda.finish_serial_cmd() 
+    # print("serial result = [%s]" % result)
+    # panda.type_serial_cmd("xmllint ~/slashdot.xml")
+    # result = panda.finish_serial_cmd() 
+    # print("serial result = [%s]" % result)
+
     panda.end_analysis()
 
-# inputfile is copied as part of copytree
-#shutil.copy(y["inputfile"], y["copydir"])
-shutil.copytree(y["installdir"], y["copydir"])
+ 
+
 
 panda = Panda(generic="i386", qcow=qcf)
 panda.queue_async(record_cmds)
 panda.run()
+    
+    
