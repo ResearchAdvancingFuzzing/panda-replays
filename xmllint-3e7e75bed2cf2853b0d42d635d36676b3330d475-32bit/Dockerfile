@@ -1,7 +1,13 @@
 FROM i386/ubuntu:18.04
 
 
+#FROM i386/debian:stretch
+#RUN echo deb http://archive.debian.org/debian wheezy-backports main >> /etc/apt/sources.list
+
 RUN apt-get update
+
+
+
 RUN apt-get -y install git build-essential libtool autoconf pkg-config
 
 

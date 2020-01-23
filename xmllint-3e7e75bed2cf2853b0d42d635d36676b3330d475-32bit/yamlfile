@@ -3,6 +3,6 @@
 inputfile:  ../xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-32bit/install/libxml2/test/slashdot.xml
 installdir: ../xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-32bit/install
 replayname: xmllint
-qcowfile:   wheezy_panda2.qcow2
+qcowfile:   bionic-server-cloudimg-i386.qcow2
 snapshot:   root
 copydir:    ../xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-32bit/copydir

@@ -58,15 +58,18 @@ def record_cmds():
     panda.revert_sync(y["snapshot"])
     panda.copy_to_guest(y["copydir"], iso_name="foo.iso")
 
+
+
     # this works (in the sense that the command executes and we get result back
-    panda.type_serial_cmd("ls copydir/install/libxml2")
-    result = panda.finish_serial_cmd() 
-    print("serial result = [%s]" % result)
+#    panda.type_serial_cmd("cd /bin")
+#    result = panda.finish_serial_cmd() 
+#    print("serial result = [%s]" % result)
 
     # this doesn't work?  Hangs forever.  :<
     # Note: even if I delete code prior to this which does ls ..
     # this one still doesn't work.
-    panda.type_serial_cmd("cd copydir/install/libxml2 && xmllint ~/slashdot.xml")
+#    panda.type_serial_cmd("cd copydir/install/libxml2/.libs && ./xmllint ~/slashdot.xml")
+    panda.type_serial_cmd("ls")
     result = panda.finish_serial_cmd() 
     print("serial result = [%s]" % result)
 
@@ -82,9 +85,8 @@ def record_cmds():
 
  
 
-
-panda = Panda(generic="i386", qcow=qcf)
+# panda = Panda(generic="i386", qcow=qcf)
+panda = Panda(arch="x86_64", expect_prompt=rb"root@ubuntu:~#", qcow=qcf, mem="1G", extra_args="-display none")
 panda.queue_async(record_cmds)
 panda.run()
-    
-    
+
