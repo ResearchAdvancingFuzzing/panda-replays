@@ -55,38 +55,30 @@ shutil.copytree(y["installdir"], y["copydir"]+"/install")
 @blocking
 def record_cmds():
 
+    print("here1")
     panda.revert_sync(y["snapshot"])
     panda.copy_to_guest(y["copydir"], iso_name="foo.iso")
 
+    cmd = "cd copydir/install/libxml2/.libs && ./xmllint ~/copydir/slashdot.xml"
+    panda.type_serial_cmd(cmd)
 
+    print(f"Beginning recording: {y['replayname']}")
+    panda.run_monitor_cmd("begin_record {}".format(y["replayname"])) # Begin recording
 
-    # this works (in the sense that the command executes and we get result back
-#    panda.type_serial_cmd("cd /bin")
-#    result = panda.finish_serial_cmd() 
-#    print("serial result = [%s]" % result)
-
-    # this doesn't work?  Hangs forever.  :<
-    # Note: even if I delete code prior to this which does ls ..
-    # this one still doesn't work.
-#    panda.type_serial_cmd("cd copydir/install/libxml2/.libs && ./xmllint ~/slashdot.xml")
-    panda.type_serial_cmd("ls")
     result = panda.finish_serial_cmd() 
-    print("serial result = [%s]" % result)
 
-    # This doesn't work either? 
-    # panda.type_serial_cmd("cd copydir/install/libxml2")
-    # result = panda.finish_serial_cmd() 
-    # print("serial result = [%s]" % result)
-    # panda.type_serial_cmd("xmllint ~/slashdot.xml")
-    # result = panda.finish_serial_cmd() 
-    # print("serial result = [%s]" % result)
+    panda.run_monitor_cmd("end_record")
+
+    print(f"Ran command `{cmd}`")
+    print(f"Result: {result}")
 
     panda.end_analysis()
 
  
 
 # panda = Panda(generic="i386", qcow=qcf)
-panda = Panda(arch="x86_64", expect_prompt=rb"root@ubuntu:~#", qcow=qcf, mem="1G", extra_args="-display none")
+# rb"root@debian-i386:.*# "
+panda = Panda(arch="i386", expect_prompt=rb"ubuntu:.*#", qcow=qcf, mem="1G", extra_args="-display none")
 panda.queue_async(record_cmds)
 panda.run()
 
