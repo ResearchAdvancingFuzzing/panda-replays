@@ -1,8 +1,8 @@
 
 
-inputfile:  ../xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-32bit/install/libxml2/test/slashdot.xml
-installdir: ../xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-32bit/install
+inputfile:  ../xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit/install/libxml2/test/slashdot.xml
+installdir: ../xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit/install
 replayname: xmllint
 qcowfile:   bionic-server-cloudimg-amd64.qcow2
 snapshot:   root
-copydir:    ../xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-32bit/copydir
+copydir:    ../xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit/copydir
