@@ -3,6 +3,7 @@
 
 import sys
 import os
+from os.path import basename
 import subprocess as sp
 
 from panda import Panda, blocking
@@ -59,7 +60,7 @@ def record_cmds():
     panda.revert_sync(y["snapshot"])
     panda.copy_to_guest(y["copydir"], iso_name="foo.iso")
 
-    cmd = "cd copydir/install/libxml2/.libs && ./xmllint ~/copydir/slashdot.xml"
+    cmd = "cd copydir/install/libxml2/.libs && ./xmllint ~/copydir/"+basename(y["inputfile"])
     panda.type_serial_cmd(cmd)
 
     print(f"Beginning recording: {y['replayname']}")
