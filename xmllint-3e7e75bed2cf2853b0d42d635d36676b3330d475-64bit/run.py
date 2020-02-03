@@ -16,9 +16,12 @@ y = yaml.load(open(sys.argv[1]), Loader=yaml.FullLoader)
 assert "inputfile" in y
 assert "installdir" in y
 assert "replayname" in y
-assert "qcowfile" in y
+assert "qcow" in y
 assert "snapshot" in y
 assert "copydir" in y
+
+# naming?
+qcowfile = basename(y["qcow"])
 
 
 # input file should exist
@@ -31,11 +34,11 @@ assert(os.path.exists(y["installdir"]))
 assert(os.path.isdir(y["installdir"]))
 
 # qcowfile should exist
-qcf = "../qcows/" + y["qcowfile"]
+qcf = "../qcows/" + qcowfile
 if not os.path.exists(qcf):
     if not os.path.exists("../qcows"):
         os.makedirs("../qcows")
-    sp.check_call(["wget", "http://panda-re.mit.edu/" + "qcows/linux/ubuntu/1804/bionic-server-cloudimg-amd64.qcow2", "-O", qcf])
+    sp.check_call(["wget", y["qcow"], "-O", qcf])
 
 
 assert(os.path.isfile(qcf))
