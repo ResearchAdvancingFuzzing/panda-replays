@@ -1,4 +1,4 @@
-FROM i386/ubuntu:18.04
+FROM amd64/ubuntu:18.04
 
 
 #FROM i386/debian:stretch

@@ -34,7 +34,7 @@ qcf = "../qcows/" + y["qcowfile"]
 if not os.path.exists(qcf):
     if not os.path.exists("../qcows"):
         os.makedirs("../qcows")
-    sp.check_call(["wget", "http://panda.moyix.net/~moyix/" + "wheezy_panda2.qcow2", "-O", qcf])
+    sp.check_call(["wget", "http://panda-re.mit.edu/" + "qcows/linux/ubuntu/1804/bionic-server-cloudimg-amd64.qcow2", "-O", qcf])
 
 
 assert(os.path.isfile(qcf))
@@ -76,9 +76,7 @@ def record_cmds():
 
  
 
-# panda = Panda(generic="i386", qcow=qcf)
-# rb"root@debian-i386:.*# "
-panda = Panda(arch="i386", expect_prompt=rb"ubuntu:.*#", qcow=qcf, mem="1G", extra_args="-display none")
+panda = Panda(arch="x86_64", expect_prompt=rb"root@ubuntu:.*#", qcow=qcf, mem="1G", extra_args="-display none -nographic")
 panda.queue_async(record_cmds)
 panda.run()
 
