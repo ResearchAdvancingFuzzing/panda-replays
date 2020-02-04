@@ -1,10 +1,10 @@
-#docker build --no-cache -t panda-xmllint .
-#rm -rf install
-#mkdir install
-#docker run -v `pwd`/install:/install panda-xmllint cp -r libxml2 install
-## make installed version NOT root:root
-## but owned by current user and has whatever group that person has
-#sudo chown -R $USER:"`id -g -n`" install
+docker build --no-cache -t panda-xmllint .
+rm -rf install
+mkdir install
+docker run -v `pwd`/install:/install panda-xmllint cp -r libxml2 install
+# make installed version NOT root:root
+# but owned by current user and has whatever group that person has
+sudo chown -R $USER:"`id -g -n`" install
 
 
 QCOW_URL=`grep qcow yamlfile | awk '{print $2}'`

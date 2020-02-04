@@ -15,7 +15,7 @@ y = yaml.load(open(sys.argv[1]), Loader=yaml.FullLoader)
 
 assert "inputfile" in y
 assert "installdir" in y
-assert "replayname" in y
+assert "replaydir" in y
 assert "qcow" in y
 assert "snapshot" in y
 assert "copydir" in y
@@ -54,7 +54,8 @@ os.makedirs(y["copydir"])
 shutil.copy(y["inputfile"], y["copydir"])
 shutil.copytree(y["installdir"], y["copydir"]+"/install")
 
-       
+replayname = y["replaydir"] + "/" + basename(y["inputfile"]) + "-panda"
+print ("replay name = [%s]" % replayname)
 
 @blocking
 def record_cmds():
@@ -66,8 +67,8 @@ def record_cmds():
     cmd = "cd copydir/install/libxml2/.libs && ./xmllint ~/copydir/"+basename(y["inputfile"])
     panda.type_serial_cmd(cmd)
 
-    print(f"Beginning recording: {y['replayname']}")
-    panda.run_monitor_cmd("begin_record {}".format(y["replayname"])) # Begin recording
+    print(f"Beginning recording: {replayname}")
+    panda.run_monitor_cmd("begin_record {}".format(replayname)) # Begin recording
 
     result = panda.finish_serial_cmd() 
 
