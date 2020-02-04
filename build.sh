@@ -1,7 +1,7 @@
-git clone git@github.com:panda-re/panda.git
+#!/bin/bash
+
 cd panda
-git checkout pypanda-dev
-git submodule update --init dtc
-mkdir build
-cd build
-../build.sh
+docker build -f ./Dockerfile_18_04 -t panda .
+
+
+
