@@ -1,7 +1,7 @@
 
 inputfile: ../xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit/install/libxml2/test/slashdot.xml
 installdir: ../xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit/install
-replayname: /panda-replays/xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit/xmllint
+replaydir:  /panda-replays/xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit
 qcow:       http://panda-re.mit.edu/qcows/linux/ubuntu/1804/bionic-server-cloudimg-amd64.qcow2
 snapshot:   root
 copydir:    ../xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit/copydir
