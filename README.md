@@ -5,8 +5,7 @@ can use PANDA to analyze them. In particular, it will house scripts
 enabling one to create PANDA replays for those program.
 
 *NOTE*: For more information on PANDA (the Platform for Architecture-Neutral
- Dyanmic Analysis), please go to the [github site]
- (http://https://github.com/panda-re/panda).
+ Dyanmic Analysis), please visit our [github](http://https://github.com/panda-re/panda).
 
 
 Getting to where one can run a program such that PANDA can create a
