@@ -16,7 +16,6 @@ inputfile = sys.argv[2]
 
 
 assert "installdir" in y
-assert "replaydir" in y
 assert "qcow" in y
 assert "snapshot" in y
 assert "copydir" in y
@@ -57,7 +56,9 @@ os.makedirs(y["copydir"])
 shutil.copy(inputfile, y["copydir"])
 shutil.copytree(y["installdir"], y["copydir"]+"/install")
 
-replayname = y["replaydir"] + "/" + basename(inputfile) + "-panda"
+# we'll write replay files here
+# but bc of -v magic that will be the right host location
+replayname = "/replay/" + basename(inputfile) + "-panda"
 print ("replay name = [%s]" % replayname)
 
 @blocking
