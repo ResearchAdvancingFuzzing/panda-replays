@@ -1,7 +1,8 @@
 # panda-replays
 
-This is a repository for scripts enabling one to create PANDA replays
-for various open source software projects.
+This is a repository for harnessing open source programs such that one
+can use PANDA to analyze them. In particular, it will house scripts
+enabling one to create PANDA replays for those program.
 
 Getting to where one can run a program such that PANDA can create a
 recording of that run on an arbitrary input is tricky business. This
