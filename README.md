@@ -1,28 +1,40 @@
 # panda-replays
 
-This is a repository for scripts enabling one to create panda replays
+This is a repository for scripts enabling one to create PANDA replays
 for various open source software projects.
 
 Getting to where one can run a program such that PANDA can create a
-recording of that run is tricky. This is because it means creating the
-version of the program that can run on guest PANDA likes, getting all
-the necessary code and config files onto that guest, and finally,
-issuing commands on the guest flanked by something like `begin_record`
-and `end_record`. The work required to make all of that happend is
-something we'd like to do once for a target and then make it generally
-available to anyone for research. This repository is where we will
-store the domain knowledge (in the form of scripts automating the
-process) required to build and harness a program for analysis.
+recording of that run on an arbitrary input is tricky business. This
+is because it entails all of the following.
+
+* Creating a `qcow` guest version of an OS that PANDA likes, i.e.,
+for which operating system introspection, etc are in place.
+* Creating a version of the program that can run on that guest.
+* Getting all the necessary code, config, and input files onto that guest.
+* Orchestrating all commands or actions on the guest in the right directories
+and in the right order such that the program runs on an arbitrary input.
+* The run of the program also has to be bookended, temporally, by issuing
+`begin_record` and `end_record` to actually create the recording.
+
+The work required to make all of that happen is something we'd like to
+do once for a target and then make it generally available to anyone
+for research purposes. This repository is where we will store the domain
+knowledge (in the form of scripts automating the process) required to
+build and harness a particular program for analysis.
+
 
 ## Preliminaries
 
-You'll have to build the panda docker container, which means running
+You'll have to build the PANDA docker container, which means running
 the `build.sh` in this top-level directory.
 
-  cd panda-replays
-  ./build.sh
+```
+cd panda-replays
+./build.sh
+```
 
 If that works you will see a lot of stuff in your terminal window, ending with
+something like the following.
 
 ```
 ...
@@ -39,45 +51,58 @@ Removing intermediate container 3a95304110a8
 
 ## Organization
 
-There are a number of subdirectories in `panda-replays`, each of which
-represents the harnessing of an open source target program. Each
-should be organized such that there exist at least a `build.sh`,
-`run.sh` script, and a `yamlfile`.
+The various `target` programs which have been harnessed and for which
+there exist scripts to create recordings on inputs are in the `targets`
+directory. Each subdirectory there should contain at least four files:
 
-1. `build.sh` script compiles the target program so that it can run on
-an existing linux guest for PANDA.
+1. `build.sh` -- builds a version of the program
+2. `run.sh` -- runs the program inside a PANDA guest, creating a recording
+3. `yamlfile` -- contains parameters needed for run including where to put
+replay files.
+4. `inputs` -- ok this is a directory, not a file, which should contain
+sample inputs (a "corpus")
 
-2. `run.sh` script does everything from getting the compiled target
-program into a booted PANDA guest to running that program against an
-input specified in the yamlfile, and turning on recording before and
-turning off after the program has run.  Note that `run.sh` ideally
-does everything using PANDA's python interface, and thus the real
-dirty work might be done by a `run.py` script.
+There are no requirements beyond this, if you are looking to add a new
+target. However, some conventions / niceties:
 
-3. `yamlfile` contains important parameters including where to put
-replays and such.
+* You will want to "condition the `qcow` you create such that it
+  contains at least one snapshot corresponding to a booted system in
+  which you have logged into a working shell.
 
+* PANDA's python interface makes a lot of this much easier. You can
+  revert to a snapshot, create a snapshot, connect to and type on a
+  serial port interface in order to interact with the guest
+  shell. This will mean you end up with `run.sh` doing a few things
+  that end up calling a python script that do all the real work of
+  running the program.  Use pyPANDA unless you like pain. 
+  <link to PyPANDA info?>.
+ 
 
 ## Example
 
 As an example, consider the subdirectory
-`xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit` which
-contains scripts for panda-harnessing aparticular version of xmllint
-(and the library it requires), You should be able to do the following
-to create a recording.
 
-  cd xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit
-  ./build.sh
-  ./run.sh
+    xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit
+
+which contains scripts for PANDA-harnessing a particular version of 
+xmllint (and the library it requires), You should be able to do the 
+following to create a recording.
+
+    cd targets/xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit
+    ./build.sh
+    ./run.sh inputs/slashdot.xml
+
+This should create a recording in the current directory, in the form of two files:
+
+    slashdot-...
+    slashdot-...
+
+You can fiddle with the `yamlfile` to control where these files go.
 
 
-1. Enter the targInside that target directory there should be a `build.sh` script which somehow
-obtains and compiles the version of the software and "installs" it in
-the subdirectory `xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit/install`.
-In that case, we use Docker to compile for a particular 
+## Contributing
 
-The basic idea is that each subdirectory will contain two scripts
+PLEASE consider adding anything you have harnessed to this framework!
+Pull requests accepted!
+    
 
-`build.sh` which clones and compiles the program under docker, depositing the resulting build directory in a subdirectory `install`.
-
-`run.sh` which uses pypanda to run the program and generate a replay.  This script takes a pair of parameters, the first is the path to the input file. The second is the name of the replay to create.
