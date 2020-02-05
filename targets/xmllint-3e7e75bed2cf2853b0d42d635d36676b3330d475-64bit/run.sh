@@ -1,7 +1,11 @@
 #!/bin/bash
 
-P=`pwd`
-PR=`realpath $P/../..`
+P=`dirname $0`
+PRD=`realpath $P/../..`
 
-echo docker run -v $PR:/panda-replays panda bash -c "cd /panda-replays/targets/xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit; python3.6 ./run.py ./yamlfile $1"
-docker run -v $PR:/panda-replays panda bash -c "cd /panda-replays/targets/xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit; python3.6 ./run.py ./yamlfile $1"
+I=$1
+IB=`basename $I`
+ID=`dirname $I`
+
+docker run -v $PRD:/panda-replays -v $ID:/input panda bash  \
+       -c "cd /panda-replays/targets/xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit; python3.6 ./run.py ./yamlfile /input/$IB"
