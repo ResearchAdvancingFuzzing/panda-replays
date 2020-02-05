@@ -99,8 +99,8 @@ following to create a recording.
 
 This should create a recording in the current directory, in the form of two files:
 
-    slashdot-...
-    slashdot-...
+    slashdot.xml-panda-rr-nondet.log
+    slashdot.xml-panda-rr-snp
 
 You can fiddle with the `yamlfile` to control where these files go.
 
