@@ -8,12 +8,12 @@ sudo chown -R $USER:"`id -g -n`" install
 
 
 QCOW_URL=`grep qcow yamlfile | awk '{print $2}'`
-echo $QCOW_URL
+#echo QCOW_URL $QCOW_URL
 
 QCOW_BASE=`basename $QCOW_URL`
-echo $QCOW_BASE
+#echo QCOW_BASE $QCOW_BASE
 
-QCOW_FILE="../qcows/$QCOW_BASE"
+QCOW_FILE="../../qcows/$QCOW_BASE"
 
 if test -f "$QCOW_FILE"; then
     echo "Qcow present: $QCOW_BASE"
