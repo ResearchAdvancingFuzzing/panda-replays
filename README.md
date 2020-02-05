@@ -84,8 +84,8 @@ already there.
   serial port interface in order to interact with the guest
   shell. This will mean you end up with `run.sh` doing a few things
   that end up calling a python script that do all the real work of
-  running the program.  Use pyPANDA unless you like pain. 
-  <link to PyPANDA info?>.
+  running the program.  Use [PyPANDA](https://github.com/panda-re/panda/tree/master/panda/pypanda)
+  unless you like pain.   
  
 
 ## Example
