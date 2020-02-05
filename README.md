@@ -70,17 +70,22 @@ sample inputs (a "corpus")
 There are no requirements beyond this, if you are looking to add a new
 target. However, some conventions / niceties:
 
-* You will want to "condition the `qcow` you create such that it
+* You will want to "condition" the `qcow` you create such that it
   contains at least one snapshot corresponding to a booted system in
   which you have logged into a working shell.
+
+* The qcows you create should be placed in `panda-replays/qcows` and you
+should make some attempt (by auditing the `build.sh` scripts for other
+targets) to make sure that you don't download or create it if it is
+already there.
 
 * PANDA's python interface makes a lot of this much easier. You can
   revert to a snapshot, create a snapshot, connect to and type on a
   serial port interface in order to interact with the guest
   shell. This will mean you end up with `run.sh` doing a few things
   that end up calling a python script that do all the real work of
-  running the program.  Use pyPANDA unless you like pain. 
-  <link to PyPANDA info?>.
+  running the program.  Use [PyPANDA](https://github.com/panda-re/panda/tree/master/panda/pypanda)
+  unless you like pain.   
  
 
 ## Example
