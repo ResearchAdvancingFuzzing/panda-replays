@@ -5,15 +5,16 @@ import sys
 import os
 from os.path import basename
 import subprocess as sp
+import yaml
 
 from panda import Panda, blocking
 
-
-import yaml
-
 y = yaml.load(open(sys.argv[1]), Loader=yaml.FullLoader)
 
-assert "inputfile" in y
+
+inputfile = sys.argv[2]
+
+
 assert "installdir" in y
 assert "replaydir" in y
 assert "qcow" in y
@@ -25,8 +26,10 @@ qcowfile = basename(y["qcow"])
 
 
 # input file should exist
-assert(os.path.exists(y["inputfile"]))
-assert(os.path.isfile(y["inputfile"]))
+assert(os.path.exists(inputfile))
+assert(os.path.isfile(inputfile))
+
+print("installdir: [%s]" % y["installdir"])
 
 # install dir should exist
 # input file should exist
@@ -34,7 +37,7 @@ assert(os.path.exists(y["installdir"]))
 assert(os.path.isdir(y["installdir"]))
 
 # qcowfile should exist
-qcf = "../qcows/" + qcowfile
+qcf = "../../qcows/" + qcowfile
 if not os.path.exists(qcf):
     if not os.path.exists("../qcows"):
         os.makedirs("../qcows")
@@ -51,20 +54,19 @@ if os.path.exists(y["copydir"]):
 os.makedirs(y["copydir"])
 
 # copy inputfile and installdir
-shutil.copy(y["inputfile"], y["copydir"])
+shutil.copy(inputfile, y["copydir"])
 shutil.copytree(y["installdir"], y["copydir"]+"/install")
 
-replayname = y["replaydir"] + "/" + basename(y["inputfile"]) + "-panda"
+replayname = y["replaydir"] + "/" + basename(inputfile) + "-panda"
 print ("replay name = [%s]" % replayname)
 
 @blocking
 def record_cmds():
 
-    print("here1")
     panda.revert_sync(y["snapshot"])
     panda.copy_to_guest(y["copydir"], iso_name="foo.iso")
 
-    cmd = "cd copydir/install/libxml2/.libs && ./xmllint ~/copydir/"+basename(y["inputfile"])
+    cmd = "cd copydir/install/libxml2/.libs && ./xmllint ~/copydir/"+basename(inputfile)
     panda.type_serial_cmd(cmd)
 
     print(f"Beginning recording: {replayname}")
