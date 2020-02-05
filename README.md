@@ -4,6 +4,11 @@ This is a repository for harnessing open source programs such that one
 can use PANDA to analyze them. In particular, it will house scripts
 enabling one to create PANDA replays for those program.
 
+*NOTE*: For more information on PANDA (the Platform for Architecture-Neutral
+ Dyanmic Analysis), please go to the [github site]
+ (http://https://github.com/panda-re/panda).
+
+
 Getting to where one can run a program such that PANDA can create a
 recording of that run on an arbitrary input is tricky business. This
 is because it entails all of the following.
