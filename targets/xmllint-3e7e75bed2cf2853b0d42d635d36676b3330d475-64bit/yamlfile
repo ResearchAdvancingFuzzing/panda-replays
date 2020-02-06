@@ -1,9 +1,8 @@
 
-
-installdir: ./install
-
+dockerfile: ./Dockerfile
+dockertag: panda-xmllint
+installdir: install
+replaydir: ./
 qcow:       http://panda-re.mit.edu/qcows/linux/ubuntu/1804/bionic-server-cloudimg-amd64.qcow2
-
 snapshot:   root
-
 copydir:    ./copydir
