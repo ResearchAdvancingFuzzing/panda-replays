@@ -14,21 +14,29 @@ from panda import Panda, blocking
 import subprocess
 
 import argparse
-parser = argparse.ArgumentParser(prog="panda_studio",description="make recordings of arbitrary programs with PANDA!")
+parser = argparse.ArgumentParser(prog="panda_studio",description="make recordings of arbitrary programs with Docker and PANDA!")
+parser.add_argument("--yaml", help="yaml file to supply all the interesting arguments")
 parser.add_argument('--qcow', help="path to qcow file to use.")
-
+parser.add_argument("--installdir", help="directory of files to move into the guest")
+parser.add_argument("--replaydir", help="directory to output replay files to")
+parser.add_argument("--snapshot", help="snapshot name")
+parser.add_argument("--copydir", help="")
 args = parser.parse_args()
+
+if args.yaml:
+    y = yaml.load(open(args.yaml), Loader=yaml.FullLoader)
+else:
+    y = {}
+
 
 
 sys.exit(0)
 
-y = yaml.load(open(sys.argv[1]), Loader=yaml.FullLoader)
 
 
 inputfile = sys.argv[2]
 
 
-assert "installdir" in y
 assert "replaydir" in y
 assert "qcow" in y
 assert "snapshot" in y
@@ -50,6 +58,9 @@ print("creating build directory...")
 rmtree(join(getcwd(), y["installdir"]),ignore_errors=True)
 mkdir(y["installdir"])
 
+if os.path.exists(y["copydir"]):
+    shutil.rmtree(y["copydir"])
+os.makedirs(y["copydir"])
 
 # make the output our uid
 myuid = os.geteuid()
@@ -83,9 +94,6 @@ if not os.path.exists(qcf):
 assert(os.path.isfile(qcf))
 
 
-if os.path.exists(y["copydir"]):
-    shutil.rmtree(y["copydir"])
-os.makedirs(y["copydir"])
 
 # copy inputfile and installdir
 shutil.copy(inputfile, y["copydir"])
