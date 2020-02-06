@@ -114,5 +114,5 @@ You can fiddle with the `yamlfile` to control where these files go.
 
 PLEASE consider adding anything you have harnessed to this framework!
 Pull requests accepted!
-    
+Again, please try to follow the organization proposed above -- you should crate a target subdir that includes at least `build.sh`, `run.sh`, `yamlfile`, and `inputs`.    
 
