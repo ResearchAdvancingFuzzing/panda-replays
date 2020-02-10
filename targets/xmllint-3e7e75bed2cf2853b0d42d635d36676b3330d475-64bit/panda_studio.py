@@ -8,41 +8,42 @@ import yaml
 import docker
 import subprocess as sp
 from os import getcwd, mkdir, rmdir
-from os.path import basename, join
+from os.path import basename, join, realpath, dirname
 from shutil import rmtree
 from panda import Panda, blocking
 import subprocess
 
 import argparse
-parser = argparse.ArgumentParser(prog="panda_studio",description="make recordings of arbitrary programs with Docker and PANDA!")
-parser.add_argument("--yaml", help="yaml file to supply all the interesting arguments")
-parser.add_argument('--qcow', help="path to qcow file to use.")
-parser.add_argument("--installdir", help="directory of files to move into the guest")
-parser.add_argument("--replaydir", help="directory to output replay files to")
-parser.add_argument("--snapshot", help="snapshot name")
-parser.add_argument("--copydir", help="")
+
+fpath = dirname(realpath(__file__))
+
+parser = argparse.ArgumentParser(prog="panda_studio",description="Make recordings of arbitrary programs with Docker and PANDA!",add_help=True)
+parser.add_argument("--yaml", help="Yaml file to supply all the interesting arguments",default=None)
+parser.add_argument('--qcow', help="Path to qcow file to use.",default="http://panda-re.mit.edu/qcows/linux/ubuntu/1804/bionic-server-cloudimg-amd64.qcow2")
+parser.add_argument("--installdir", help="Directory of files to move into the guest. Default is local to script.", default=join(fpath,"install"))
+parser.add_argument("--replaydir", help="Directory to output replay files to. Default is script directory.",default=fpath)
+parser.add_argument("--snapshot", help="Name of snapshot to restore",default="root")
+parser.add_argument("--copydir", help="Path to copy items to. Default is folder local to script.",default=join(fpath,"copydir"))
+parser.add_argument("--dockerfile", help="Path to docker file. Default is example in directory.", default=join(fpath,"Dockerfile"))
+parser.add_argument("--dockertag", help="Tag on docker container. Default is example.", default="panda-xmllint")
+parser.add_argument("--inputfile")
 args = parser.parse_args()
 
 if args.yaml:
     y = yaml.load(open(args.yaml), Loader=yaml.FullLoader)
 else:
-    y = {}
+    y = vars(args)
 
 
-
-sys.exit(0)
-
-
-
-inputfile = sys.argv[2]
-
-
-assert "replaydir" in y
-assert "qcow" in y
-assert "snapshot" in y
-assert "copydir" in y
-assert "dockertag" in y
-assert "dockerfile" in y
+#inputfile = sys.argv[2]
+inputfile = y["inputfile"]
+assert "inputfile" in y and not y["inputfile"] is None 
+assert "replaydir"in y and not y["replaydir"] is None 
+assert "qcow" in y and not y["qcow"] is None 
+assert "snapshot" in y and not y["snapshot"] is None 
+assert "copydir" in y and not y["copydir"] is None 
+assert "dockertag" in y and not y["dockertag"] is None 
+assert "dockerfile" in y and not y["dockerfile"] is None 
 
 client = docker.from_env()
 if not any([any([y["dockertag"] in tag for tag in image.tags]) for image in client.images.list()]):
@@ -71,7 +72,6 @@ client.containers.run(y["dockertag"], movecmd, volumes={join(
 # naming?
 qcowfile = basename(y["qcow"])
 
-
 # input file should exist
 assert(os.path.exists(inputfile))
 assert(os.path.isfile(inputfile))
@@ -92,8 +92,6 @@ if not os.path.exists(qcf):
 
 
 assert(os.path.isfile(qcf))
-
-
 
 # copy inputfile and installdir
 shutil.copy(inputfile, y["copydir"])
