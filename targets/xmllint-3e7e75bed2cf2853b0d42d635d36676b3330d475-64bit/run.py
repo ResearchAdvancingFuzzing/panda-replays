@@ -3,6 +3,8 @@
 
 import sys
 import os
+from stat import *
+import glob
 from os.path import basename
 import subprocess as sp
 import yaml
@@ -82,9 +84,21 @@ def record_cmds():
 
     panda.end_analysis()
 
+
+    
  
 
 panda = Panda(arch="x86_64", expect_prompt=rb"root@ubuntu:.*#", qcow=qcf, mem="1G", extra_args="-display none -nographic")
 panda.queue_async(record_cmds)
 panda.run()
+
+
+
+with open ("/replay/run.log", "w") as ml:
+    for fn in glob.glob("%s-rr-*" % replayname):
+        ml.write ("chmod %s\n" % fn)
+        os.chmod(fn, S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IROTH)
+
+
+
 

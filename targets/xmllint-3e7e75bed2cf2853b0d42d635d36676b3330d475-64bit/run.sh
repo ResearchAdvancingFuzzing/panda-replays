@@ -20,5 +20,7 @@ ID=`dirname $I`
 RD=$HERE
 
 
+
+echo docker run -v $PRD:/panda-replays -v $ID:/input -v $RD:/replay panda bash -c "cd /panda-replays/targets/xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit; python3.6 ./run.py ./yamlfile /input/$IB"
 docker run -v $PRD:/panda-replays -v $ID:/input -v $RD:/replay panda bash -c "cd /panda-replays/targets/xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit; python3.6 ./run.py ./yamlfile /input/$IB"
 
