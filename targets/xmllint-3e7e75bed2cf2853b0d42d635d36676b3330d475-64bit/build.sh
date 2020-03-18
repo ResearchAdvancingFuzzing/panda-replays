@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 docker build --no-cache -t panda-xmllint .
 rm -rf install
 mkdir install
