@@ -9,7 +9,7 @@ from os.path import basename
 import subprocess as sp
 import yaml
 
-from panda import Panda, blocking
+from pandare import Panda, blocking
 
 y = yaml.load(open(sys.argv[1]), Loader=yaml.FullLoader)
 
