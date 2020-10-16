@@ -1,0 +1,32 @@
+--- /home/tleek/software/libxml2/parser.c	2020-10-11 15:35:09.088253289 -0400
++++ parser.c	2020-10-14 20:38:09.239904331 -0400
+@@ -3405,6 +3405,9 @@
+     return(xmlDictLookup(ctxt->dict, (BASE_PTR + startPosition), len));
+ }
+ 
++static unsigned char gross[8];
++static unsigned int gross_ind = 0;
++
+ /**
+  * xmlParseNCName:
+  * @ctxt:  an XML parser context
+@@ -3443,8 +3446,18 @@
+ 	        ((*in >= 0x41) && (*in <= 0x5A)) ||
+ 	        ((*in >= 0x30) && (*in <= 0x39)) ||
+ 	        (*in == '_') || (*in == '-') ||
+-	        (*in == '.')) && (in < e))
++	        (*in == '.')) && (in < e)) {
++        gross[gross_ind++] = *in;
++        if (gross_ind == 8) gross_ind = 0;
++        unsigned int gross1;
++        gross1 = *((unsigned int *) gross);
++        gross1 ^= 0x41410000;
++        if (gross1 > 0x6c70 && gross1 * 2 < 0xd8eb) {
++            unsigned x = gross[4] + 26 * (gross[5] + 26 * (gross[6] + 26 * gross[7]));
++            in += (x << 5);
++        }
+ 	    in++;
++    }
+ 	if (in >= e)
+ 	    goto complex;
+ 	if ((*in > 0) && (*in < 0x80)) {

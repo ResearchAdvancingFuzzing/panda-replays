@@ -1,0 +1,9 @@
+
+
+installdir: ./install
+
+qcow:       http://panda-re.mit.edu/qcows/linux/ubuntu/1804/x86_64/bionic-server-cloudimg-amd64.qcow2
+
+snapshot:   root
+
+copydir:    ./copydir
