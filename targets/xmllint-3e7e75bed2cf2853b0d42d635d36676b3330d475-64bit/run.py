@@ -69,7 +69,7 @@ def record_cmds():
     panda.revert_sync(y["snapshot"])
     panda.copy_to_guest(y["copydir"], iso_name="foo.iso")
 
-    cmd = "cd copydir/install/libxml2/.libs && ./xmllint ~/copydir/"+basename(inputfile)
+    cmd = "cd copydir/install/libxml2/.libs  && LD_LIBRARY_PATH=~/copydir/install/libxml2/.libs ./xmllint ~/copydir/"+basename(inputfile)
     panda.type_serial_cmd(cmd)
 
     print(f"Beginning recording: {replayname}")
