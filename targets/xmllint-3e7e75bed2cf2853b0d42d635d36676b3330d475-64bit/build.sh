@@ -1,10 +1,11 @@
-#!/bin/bash
-set -e
+#!/bin/bash 
+set -e 
 
-docker build --no-cache -t panda-xmllint .
+
+docker build --no-cache -t panda-xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit .
 rm -rf install
 mkdir install
-docker run -v `pwd`/install:/install panda-xmllint cp -r libxml2 install
+docker run -v `pwd`/install:/install panda-xmllint-3e7e75bed2cf2853b0d42d635d36676b3330d475-64bit cp -r libxml2 install
 # make installed version NOT root:root
 # but owned by current user and has whatever group that person has
 sudo chown -R $USER:"`id -g -n`" install
